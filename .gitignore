@@ -31,4 +31,5 @@
 *.out
 *.app
 
-esp12-e/config.h
+esp8266/config.h
+esp8266-build/
