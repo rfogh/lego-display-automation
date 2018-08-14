@@ -1,0 +1,12 @@
+[Unit]
+Description=Emit MQTT events when faces are detected on the RPi cam.
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/pi/lego-display-automation/facedetection/mqtt_face_detection.py
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+

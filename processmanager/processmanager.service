@@ -1,0 +1,12 @@
+[Unit]
+Description=Orchestrates MQTT commands based on events.
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/pi/lego-display-automation/processmanager/processmanager.py
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+
