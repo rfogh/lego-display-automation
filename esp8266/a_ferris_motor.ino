@@ -74,7 +74,7 @@
 //     analogWrite(PWMA, 0);
 //     analogWrite(PWMB, 0);
 
-//     client = new MqttClient("ferris_motor", handler);
+//     client = new MqttClient(handler);
 //     client->subscribe("command/ferris/#");
 // }
 

@@ -10,16 +10,19 @@
 class MqttClient
 {
   public:
-    MqttClient(const char *clientId, void (*handler)(char*, ArduinoJson::JsonObject&));
+    MqttClient(void (*handler)(char*, ArduinoJson::JsonObject&));
     boolean publish(const char *topic);
     boolean publish(const char *topic, JsonObject& message);
     boolean subscribe(const char *topic);
     void loop();
+    char* getClientId();
   private:
     void setup_wifi();
     void callback(char *topic, unsigned char *payload, unsigned int length);
     boolean reconnect();
-    const char *_clientId;
+    void setHandler(void (*handler)(char*, JsonObject&));
+    void setClientId();
+    char _clientId[12];
     const char *_subscriptions[MQTT_MAX_SUBSCRIPTIONS];
     int _subscriptionIndex = 0;
     void (*_handler)(char*, JsonObject&);

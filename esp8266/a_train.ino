@@ -23,8 +23,7 @@
 
 //   pinMode(SENSOR, INPUT);
 
-//   client = new MqttClient("train");
-//   client->initialize(handler);
+//   client = new MqttClient(handler);
 //   client->subscribe("command/train/#");
 // }
 

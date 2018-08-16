@@ -49,7 +49,7 @@
 //   pixels.setMode(FX_MODE_STATIC);
 //   pixels.start();
 
-//   client = new MqttClient("ferris_light", handler);
+//   client = new MqttClient(handler);
 //   client->subscribe("command/ferris/#");
 // }
 

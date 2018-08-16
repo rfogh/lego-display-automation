@@ -58,7 +58,7 @@ void setup() {
     listenForInput();
     pixels.start();
 
-    client = new MqttClient("ferris_touch", handler);
+    client = new MqttClient(handler);
     client->subscribe("event/ferris/#");
     client->subscribe("command/touch/#");
 }
