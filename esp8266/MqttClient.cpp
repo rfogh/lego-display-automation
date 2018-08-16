@@ -4,7 +4,7 @@
 WiFiClient _espClient = WiFiClient();
 PubSubClient _client = PubSubClient(MQTT_SERVER, 1883, _espClient);
 
-MqttClient::MqttClient(void (*handler)(char*, JsonObject&)) {
+MqttClient::MqttClient(void (*handler)(String, JsonObject&)) {
   setClientId();
   setup_wifi();
 
@@ -36,10 +36,18 @@ void MqttClient::callback(char* topic, unsigned char* payload, unsigned int leng
   Serial.println(topic);
   Serial.println((char*) payload);
 
+  String stringTopic(topic);
+
   StaticJsonBuffer<400> jsonBuffer;
   JsonObject& message = jsonBuffer.parseObject(payload);
 
-  _handler(topic, message);
+  if (stringTopic.startsWith("command") &&
+      message.containsKey("clientid") &&
+      message["clientid"] != _clientId) {
+    return;
+  }
+
+  _handler(stringTopic, message);
 }
 
 long lastReconnectAttempt = 0;
@@ -95,7 +103,7 @@ boolean MqttClient::subscribe(const char *topic) {
   return _client.subscribe(topic);
 }
 
-void MqttClient::setHandler(void (*handler)(char*, JsonObject&)) {
+void MqttClient::setHandler(void (*handler)(String, JsonObject&)) {
   std::function<void(char*, unsigned char*, unsigned int)> pubsubCallback = [this] (char *topic, unsigned char *payload, unsigned int length) {this -> callback(topic, payload, length);};
   _client.setCallback(pubsubCallback);
 
@@ -104,7 +112,7 @@ void MqttClient::setHandler(void (*handler)(char*, JsonObject&)) {
 
 void MqttClient::setClientId() {
   uint32_t chipid=ESP.getChipId();
-  snprintf(_clientId,10,"ESP-%08X",chipid);
+  snprintf(_clientId,12,"ESP-%08X",chipid);
 }
 
 char* MqttClient::getClientId() {

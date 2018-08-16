@@ -12,38 +12,74 @@
 WS2812FX pixels = WS2812FX(NUMPIXELRING, PIXELPIN, NEO_GRB+NEO_KHZ800);
 MqttClient *client;
 Ticker ticker;
-bool listeningForTouchInput = false;
+bool listeningForTouch = false;
 
-void listenForInput() {
+void listenForTouch() {
     ticker.detach();
 
     pixels.setColor(BLUE);
     pixels.setMode(FX_MODE_STATIC);
 
-    listeningForTouchInput = true;
+    client->publish("event/touch/activated");
+
+    listeningForTouch = true;
 }
 
-void handler(char* topic, JsonObject& message) {
-    if (strcmp(topic, "event/ferris/started") == 0) {
+void handler(String topic, JsonObject& message) {
+    if (topic == "command/touch/run") {
         ticker.detach();
 
         unsigned short duration = message["duration"];
-        pixels.setColor(GREEN);
-        pixels.setMode(FX_MODE_COLOR_WIPE_INV);
-        pixels.setSpeed(duration*2000);
-    }
-    else if (strcmp(topic, "event/ferris/stopped") == 0) {
-        unsigned short pause = message["pause"];
-        pixels.setColor(BLUE);
-        pixels.setMode(FX_MODE_COLOR_WIPE);
-        pixels.setSpeed(pause*2000);
+        if (duration > 0) {
+            pixels.setColor(GREEN);
+            pixels.setMode(FX_MODE_COLOR_WIPE_INV);
+            pixels.setSpeed(duration*2000);
+        } else {
+            pixels.setColor(GREEN);
+            pixels.setMode(FX_MODE_COMET);
+            pixels.setSpeed(3000);
+        }
 
-        ticker.attach(pause, listenForInput);
+        client->publish("event/touch/runstarted");
     }
-    else if (strcmp(topic, "command/touch/setbrightness") == 0) {
+    else if (topic == "command/touch/pause") {
+        unsigned short duration = message["duration"];
+
+        if (duration > 0) {
+            pixels.setColor(BLUE);
+            pixels.setMode(FX_MODE_COLOR_WIPE);
+            pixels.setSpeed(duration*2000);
+            ticker.attach(duration, listenForTouch);
+    
+            client->publish("event/touch/paused");
+        }
+        else {
+            listenForTouch();
+        }
+    }
+    else if (topic == "command/touch/setbrightness") {
         pixels.setBrightness(message["brightness"]);
-        
         client->publish("event/touch/brightnessset");
+    }
+}
+
+void readTouch() {
+    if (!listeningForTouch) {
+        return;
+    }
+
+    int touched = digitalRead(TOUCHPIN);
+    if(touched == HIGH) {
+        listeningForTouch = false;
+        pixels.setColor(GREEN);
+        pixels.setMode(FX_MODE_STATIC);
+        ticker.attach(WAIT_FOR_START_MESSAGE_TIMEOUT, listenForTouch);
+
+        StaticJsonBuffer<40> jsonBuffer;
+        JsonObject& event = jsonBuffer.createObject();
+        event["clientid"] = client->getClientId();
+
+        client->publish("event/touch/touched", event);
     }
 }
 
@@ -55,27 +91,11 @@ void setup() {
     pixels.init();
     pixels.setBrightness(10);
     pixels.setSpeed(1200);
-    listenForInput();
+    listenForTouch();
     pixels.start();
 
     client = new MqttClient(handler);
-    client->subscribe("event/ferris/#");
     client->subscribe("command/touch/#");
-}
-
-void readTouch() {
-    if (!listeningForTouchInput) {
-        return;
-    }
-
-    int touched = digitalRead(TOUCHPIN);
-    if(touched == HIGH) {
-        listeningForTouchInput = false;
-        pixels.setColor(GREEN);
-        pixels.setMode(FX_MODE_STATIC);
-        ticker.attach(WAIT_FOR_START_MESSAGE_TIMEOUT, listenForInput);
-        client->publish("event/ferris/activated");
-    }
 }
 
 void loop() {
