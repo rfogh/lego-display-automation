@@ -22,6 +22,7 @@ void MqttClient::setup_wifi() {
   Serial.print("Connecting to ");
   Serial.println(WIFI_SSID);
 
+  Wifi.Mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   while (WiFi.status() != WL_CONNECTED) {
