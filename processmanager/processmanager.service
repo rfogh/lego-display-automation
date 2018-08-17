@@ -5,7 +5,8 @@ After=multi-user.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/python3 /home/pi/lego-display-automation/processmanager/processmanager.py
-Restart=on-abort
+Restart=always
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
