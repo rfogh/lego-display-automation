@@ -44,8 +44,8 @@
 //     client->publish("event/ferris/stopped", event);
 // }
 
-// void handler(char* topic, JsonObject& message) {
-//     if (strcmp(topic, "command/ferris/run") == 0) {
+// void handler(String topic, JsonObject& message) {
+//     if (topic == "command/ferris/run") {
 //         unsigned short direction = message["direction"];
 //         unsigned short duration = message["duration"];
 //         unsigned short pause = message["pause"];
@@ -54,11 +54,11 @@
 
 //         start(direction, duration);
 //     }
-//     if (strcmp(topic, "command/ferris/start") == 0) {
+//     else if (topic == "command/ferris/start") {
 //         unsigned short direction = message["direction"];
 //         start(direction);
 //     }
-//     if (strcmp(topic, "command/ferris/stop") == 0) {
+//     else if (topic == "command/ferris/stop") {
 //         stop();
 //     }
 // }
@@ -74,7 +74,7 @@
 //     analogWrite(PWMA, 0);
 //     analogWrite(PWMB, 0);
 
-//     client = new MqttClient("ferris_motor", handler);
+//     client = new MqttClient(handler);
 //     client->subscribe("command/ferris/#");
 // }
 

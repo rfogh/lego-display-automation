@@ -4,15 +4,11 @@
 WiFiClient _espClient = WiFiClient();
 PubSubClient _client = PubSubClient(MQTT_SERVER, 1883, _espClient);
 
-MqttClient::MqttClient(const char *clientId, void (*handler)(char*, JsonObject&))
-{
+MqttClient::MqttClient(void (*handler)(String, JsonObject&)) {
+  setClientId();
   setup_wifi();
 
-  std::function<void(char*, unsigned char*, unsigned int)> pubsubCallback = [this] (char *topic, unsigned char *payload, unsigned int length) {this -> callback(topic, payload, length);};
-  _client.setCallback(pubsubCallback);
-
-  _clientId = clientId;
-  _handler = handler;
+  setHandler(handler);
 }
 
 void MqttClient::setup_wifi() {
@@ -22,6 +18,7 @@ void MqttClient::setup_wifi() {
   Serial.print("Connecting to ");
   Serial.println(WIFI_SSID);
 
+  WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -39,17 +36,25 @@ void MqttClient::callback(char* topic, unsigned char* payload, unsigned int leng
   Serial.println(topic);
   Serial.println((char*) payload);
 
+  String stringTopic(topic);
+
   StaticJsonBuffer<400> jsonBuffer;
   JsonObject& message = jsonBuffer.parseObject(payload);
 
-  _handler(topic, message);
+  if (stringTopic.startsWith("command") &&
+      message.containsKey("clientid") &&
+      message["clientid"] != _clientId) {
+    return;
+  }
+
+  _handler(stringTopic, message);
 }
 
 long lastReconnectAttempt = 0;
 
 boolean MqttClient::reconnect() {
   if (_client.connect(_clientId)) {
-    _client.publish("status/connection", _clientId);
+    _client.publish("event/connected", _clientId);
 
     //Resubscribe
     for (int i=0; i<_subscriptionIndex; i++) {
@@ -96,4 +101,20 @@ boolean MqttClient::subscribe(const char *topic) {
 
   _subscriptions[_subscriptionIndex++] = topic;
   return _client.subscribe(topic);
+}
+
+void MqttClient::setHandler(void (*handler)(String, JsonObject&)) {
+  std::function<void(char*, unsigned char*, unsigned int)> pubsubCallback = [this] (char *topic, unsigned char *payload, unsigned int length) {this -> callback(topic, payload, length);};
+  _client.setCallback(pubsubCallback);
+
+  _handler = handler;
+}
+
+void MqttClient::setClientId() {
+  uint32_t chipid=ESP.getChipId();
+  snprintf(_clientId,12,"ESP-%08X",chipid);
+}
+
+char* MqttClient::getClientId() {
+  return _clientId;
 }

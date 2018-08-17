@@ -10,8 +10,8 @@
 // WS2812FX pixels = WS2812FX(NUMSTRIP*NUMPIXELS, PIN, NEO_GRB+NEO_KHZ800);
 // MqttClient *client;
   
-// void handler(char* topic, JsonObject& message) {
-//   if (strcmp(topic, "command/ferris/setmode") == 0) {
+// void handler(String topic, JsonObject& message) {
+//   if (topic == "command/ferris/setmode") {
 //     pixels.resetSegments();
 
 //     unsigned int colors[3];
@@ -32,7 +32,7 @@
 
 //     client->publish("event/ferris/modeset");
 //   }
-//   else if (strcmp(topic, "command/ferris/setbrightness") == 0) {
+//   else if (topic == "command/ferris/setbrightness") {
 //     pixels.setBrightness(message["brightness"]);
 
 //     client->publish("event/ferris/brightnessset");
@@ -49,7 +49,7 @@
 //   pixels.setMode(FX_MODE_STATIC);
 //   pixels.start();
 
-//   client = new MqttClient("ferris_light", handler);
+//   client = new MqttClient(handler);
 //   client->subscribe("command/ferris/#");
 // }
 

@@ -23,8 +23,7 @@
 
 //   pinMode(SENSOR, INPUT);
 
-//   client = new MqttClient("train");
-//   client->initialize(handler);
+//   client = new MqttClient(handler);
 //   client->subscribe("command/train/#");
 // }
 
@@ -47,8 +46,8 @@
 //   }
 // }
 
-// void handler(char* topic, JsonObject& message) {
-//   if (strcmp(topic, "command/train/start") == 0) {
+// void handler(String topic, JsonObject& message) {
+//   if (topic == "command/train/start") {
 //     unsigned short direction = message["direction"];
 //     unsigned short speed = message["speed"];
 
@@ -74,7 +73,7 @@
 
 //     sensorCount = 0;
 //   }
-//   if (strcmp(topic, "command/train/stop") == 0) {
+//   else if (topic == "command/train/stop") {
 //     slowDown();
 //     stop();
 //   }
