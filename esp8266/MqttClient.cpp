@@ -1,14 +1,16 @@
 #include "MqttClient.h"
 #include "config.h"
 
-WiFiClient _espClient = WiFiClient();
-PubSubClient _client = PubSubClient(MQTT_SERVER, 1883, _espClient);
+WiFiClient _espClient;
+PubSubClient _client(MQTT_SERVER, 1883, _espClient);
 
 MqttClient::MqttClient(void (*handler)(String, JsonObject&)) {
   setClientId();
-  setup_wifi();
-
   setHandler(handler);
+}
+
+void MqttClient::begin() {
+  setup_wifi();
 }
 
 void MqttClient::setup_wifi() {
@@ -48,6 +50,13 @@ void MqttClient::callback(char* topic, unsigned char* payload, unsigned int leng
   }
 
   _handler(stringTopic, message);
+}
+
+void MqttClient::setHandler(void (*handler)(String, JsonObject&)) {
+  std::function<void(char*, unsigned char*, unsigned int)> pubsubCallback = [this] (char *topic, unsigned char *payload, unsigned int length) {this -> callback(topic, payload, length);};
+  _client.setCallback(pubsubCallback);
+
+  _handler = handler;
 }
 
 long lastReconnectAttempt = 0;
@@ -101,13 +110,6 @@ boolean MqttClient::subscribe(const char *topic) {
 
   _subscriptions[_subscriptionIndex++] = topic;
   return _client.subscribe(topic);
-}
-
-void MqttClient::setHandler(void (*handler)(String, JsonObject&)) {
-  std::function<void(char*, unsigned char*, unsigned int)> pubsubCallback = [this] (char *topic, unsigned char *payload, unsigned int length) {this -> callback(topic, payload, length);};
-  _client.setCallback(pubsubCallback);
-
-  _handler = handler;
 }
 
 void MqttClient::setClientId() {

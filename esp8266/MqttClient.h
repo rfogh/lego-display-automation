@@ -11,6 +11,7 @@ class MqttClient
 {
   public:
     MqttClient(void (*handler)(String, ArduinoJson::JsonObject&));
+    void begin();
     boolean publish(const char *topic);
     boolean publish(const char *topic, JsonObject& message);
     boolean subscribe(const char *topic);

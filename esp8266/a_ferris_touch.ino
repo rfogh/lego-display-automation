@@ -9,20 +9,34 @@
 #define NUMPIXELRING                    12
 #define WAIT_FOR_START_MESSAGE_TIMEOUT  5
 
-WS2812FX pixels = WS2812FX(NUMPIXELRING, PIXELPIN, NEO_GRB+NEO_KHZ800);
-MqttClient *client;
+void handler(String topic, JsonObject& message);
+void listenForTouch();
+void readTouch();
+
+WS2812FX pixels(NUMPIXELRING, PIXELPIN, NEO_GRB+NEO_KHZ800);
+MqttClient client(handler);
 Ticker ticker;
 bool listeningForTouch = false;
 
-void listenForTouch() {
-    ticker.detach();
+void setup() {
+    Serial.begin(115200);
 
-    pixels.setColor(BLUE);
-    pixels.setMode(FX_MODE_STATIC);
+    pinMode(TOUCHPIN, INPUT);
 
-    client->publish("event/touch/activated");
+    pixels.init();
+    pixels.setBrightness(10);
+    listenForTouch();
+    pixels.start();
 
-    listeningForTouch = true;
+    client.begin();
+    client.subscribe("command/touch/#");
+}
+
+void loop() {
+    readTouch();
+
+    pixels.service();
+    client.loop();
 }
 
 void handler(String topic, JsonObject& message) {
@@ -40,7 +54,7 @@ void handler(String topic, JsonObject& message) {
             pixels.setSpeed(3000);
         }
 
-        client->publish("event/touch/runstarted");
+        client.publish("event/touch/runstarted");
     }
     else if (topic == "command/touch/pause") {
         unsigned short duration = message["duration"];
@@ -51,7 +65,7 @@ void handler(String topic, JsonObject& message) {
             pixels.setSpeed(duration*2000);
             ticker.attach(duration, listenForTouch);
     
-            client->publish("event/touch/paused");
+            client.publish("event/touch/paused");
         }
         else {
             listenForTouch();
@@ -59,8 +73,19 @@ void handler(String topic, JsonObject& message) {
     }
     else if (topic == "command/touch/setbrightness") {
         pixels.setBrightness(message["brightness"]);
-        client->publish("event/touch/brightnessset");
+        client.publish("event/touch/brightnessset");
     }
+}
+
+void listenForTouch() {
+    ticker.detach();
+
+    pixels.setColor(BLUE);
+    pixels.setMode(FX_MODE_STATIC);
+
+    client.publish("event/touch/activated");
+
+    listeningForTouch = true;
 }
 
 void readTouch() {
@@ -77,30 +102,8 @@ void readTouch() {
 
         StaticJsonBuffer<40> jsonBuffer;
         JsonObject& event = jsonBuffer.createObject();
-        event["clientid"] = client->getClientId();
+        event["clientid"] = client.getClientId();
 
-        client->publish("event/touch/touched", event);
+        client.publish("event/touch/touched", event);
     }
-}
-
-void setup() {
-    Serial.begin(115200);
-
-    pinMode(TOUCHPIN, INPUT);
-
-    pixels.init();
-    pixels.setBrightness(10);
-    pixels.setSpeed(1200);
-    listenForTouch();
-    pixels.start();
-
-    client = new MqttClient(handler);
-    client->subscribe("command/touch/#");
-}
-
-void loop() {
-    readTouch();
-
-    pixels.service();
-    client->loop();
 }
