@@ -83,11 +83,10 @@ def handler(topic, message):
 #   command/status/off {"number": [0-6]}
 #   command/ferris/setbrightness {"brightness": [0-255]}
 
-def runFerris() {
+def runFerris():
     duration = 10
     client.publish("command/ferris/run", {"duration": duration})
     client.publish("command/status/on", {"duration": duration})
-}
 
 def subscriptions():
     client.subscribe("event/facedetected")
