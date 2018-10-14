@@ -114,7 +114,7 @@ def runTrainA():
 
 def runFriends():
     duration = 10
-    client.publish("command/friends/run", {"duration": duration})
+    client.publish("command/friends/run", {"duration": duration, "pause":1})
     client.publish("command/status/on", {"duration": duration, "number":5})
 
 def runTrainB():
