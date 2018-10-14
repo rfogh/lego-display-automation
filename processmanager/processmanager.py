@@ -83,10 +83,45 @@ def handler(topic, message):
 #   command/status/off {"number": [0-6]}
 #   command/ferris/setbrightness {"brightness": [0-255]}
 
+def runSkorsten():
+    duration = 10
+    client.publish("sallingaarhus/julemandop", {})
+    client.publish("command/status/on", {"number":0})
+    time.sleep(duration-2)
+    client.publish("sallingaarhus/julemandned", {})
+    time.sleep(2)
+    client.publish("command/status/off", {"number":0})
+
 def runFerris():
     duration = 10
     client.publish("command/ferris/run", {"duration": duration})
-    client.publish("command/status/on", {"duration": duration})
+    client.publish("command/status/on", {"duration": duration, "number":1})
+
+def runRocking():
+    duration = 10
+    client.publish("sallingaarhus/gyngestolgyng", {})
+    client.publish("command/status/on", {"duration": duration, "number":2})
+
+def runRoller():
+    duration = 10
+    client.publish("command/roller/run", {})
+    client.publish("command/status/on", {"duration": duration, "number":3})
+
+def runTrainA():
+    duration = 10
+    client.publish("command/train/run", {"duration": duration, "train":"A"})
+    client.publish("command/status/on", {"duration": duration, "number":4})
+
+def runFriends():
+    duration = 10
+    client.publish("command/friends/run", {"duration": duration})
+    client.publish("command/status/on", {"duration": duration, "number":5})
+
+def runTrainB():
+    duration = 10
+    client.publish("command/train/run", {"duration": duration, "train":"B"})
+    client.publish("command/status/on", {"duration": duration, "number":6})
+
 
 def subscriptions():
     client.subscribe("event/facedetected")
