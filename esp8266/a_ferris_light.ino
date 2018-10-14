@@ -23,7 +23,7 @@
 
 //     if (message["circle"]) {
 //       for (int i=0; i<NUMSTRIP; i++) {
-//         pixels.setSegment(i, i*NUMPIXELS, (i+1)*NUMPIXELS-1, mode, colors, speed, i%2==direction);
+//         pixels.setSegment(i, i*NUMPIXELS, (i+1)*NUMPIXELS-1, mode, colors, speed, i%2==direction); 
 //       }
 //     }
 //     else {

@@ -1,91 +1,144 @@
-// /* MOTOR CONTROL FOR TRAIN */
+// /* MOTOR CONTROL FOR TRAINS */
 
 // #include "MqttClient.h"
+// #include <Ticker.h>
 
 // #define PWMA         D1
 // #define DA           D3
 // #define PWMB         D2
 // #define DB           D4
 
-// #define SENSOR       D7
+// void handler(String topic, JsonObject& message);
 
-// MqttClient *client = NULL;
-// unsigned short speed = 0;
-// unsigned short sensorCount = 0;
+// MqttClient client(handler);
+// Ticker aTicker;
+// Ticker bTicker;
 
-// void setup() {
-//   Serial.begin(115200);
-  
-//   pinMode(PWMA, OUTPUT);
-//   pinMode(DA, OUTPUT);
-//   pinMode(PWMB, OUTPUT);
-//   pinMode(DB, OUTPUT);
+// void startA(unsigned short direction, unsigned short duration = 0) {
+//     if (direction == 0) {
+//         digitalWrite(DA, LOW);
+//     } else {
+//         digitalWrite(DA, HIGH);
+//     }
 
-//   pinMode(SENSOR, INPUT);
+//     StaticJsonBuffer<200> jsonBuffer;
+//     JsonObject& event = jsonBuffer.createObject();
+//     event["duration"] = duration;
+//     event["train"] = "A";
+//     client.publish("event/train/started", event);
 
-//   client = new MqttClient(handler);
-//   client->subscribe("command/train/#");
+//     for (int i=600; i<PWMRANGE; i=i+20) {
+//         analogWrite(PWMA, i);
+//         delay(50);
+//     }
+//     analogWrite(PWMA, PWMRANGE);
 // }
 
-// void loop() {
-//   client->loop();
-
-//   int sensorReading = digitalRead(SENSOR);
-//   if (sensorReading == LOW) {
-//     sensorCount++;
-
-//     if(sensorCount == 1) {
-//       Serial.println("Slowing down...");
-//       slowDown();
+// void startB(unsigned short direction, unsigned short duration = 0) {
+//     if (direction == 0) {
+//         digitalWrite(DB, LOW);
+//     } else {
+//         digitalWrite(DB, HIGH);
 //     }
-//     if (sensorCount == 2) {
-//       stop();
-//       Serial.println("Stopped");
+
+//     StaticJsonBuffer<200> jsonBuffer;
+//     JsonObject& event = jsonBuffer.createObject();
+//     event["duration"] = duration;
+//     event["train"] = "B";
+//     client.publish("event/train/started", event);
+
+//     for (int i=600; i<PWMRANGE; i=i+20) {
+//         analogWrite(PWMB, i);
+//         delay(50);
 //     }
-//     delay(1000);
-//   }
+//     analogWrite(PWMB, PWMRANGE);
+// }
+
+// void stopA(unsigned short pause = 0) {
+//     for (int i=PWMRANGE; i>600; i=i-20) {
+//         analogWrite(PWMA, i);
+//         delay(50);
+//     }
+//     analogWrite(PWMA, 0);
+
+//     StaticJsonBuffer<200> jsonBuffer;
+//     JsonObject& event = jsonBuffer.createObject();
+//     event["pause"] = pause;
+//     event["train"] = "A";
+//     client.publish("event/train/stopped", event);
+// }
+
+// void stopB(unsigned short pause = 0) {
+//     for (int i=PWMRANGE; i>600; i=i-20) {
+//         analogWrite(PWMB, i);
+//         delay(50);
+//     }
+//     analogWrite(PWMB, 0);
+
+//     StaticJsonBuffer<200> jsonBuffer;
+//     JsonObject& event = jsonBuffer.createObject();
+//     event["pause"] = pause;
+//     event["train"] = "B";
+//     client.publish("event/train/stopped", event);
 // }
 
 // void handler(String topic, JsonObject& message) {
-//   if (topic == "command/train/start") {
-//     unsigned short direction = message["direction"];
-//     unsigned short speed = message["speed"];
+//     if (topic == "command/train/run") {
+//         unsigned short direction = message["direction"];
+//         unsigned short duration = message["duration"];
+//         unsigned short pause = message["pause"];
+//         String train = message["train"];
 
-//     if (speed < 500) {
-//       speed = 500;
-//     }
-//     if (speed > PWMRANGE) {
-//       speed = PWMRANGE;
-//     }
+//         if (train == "A") {
+//             aTicker.once(duration, stopA, pause);
+//             startA(direction, duration);
+//         }
 
-//     if (direction == 0) {
-//       analogWrite(DA, LOW);
+//         if (train == "B") {
+//             bTicker.once(duration, stopB, pause);
+//             startB(direction, duration);
+//         }
 //     }
-//     else {
-//       analogWrite(DA, HIGH);
-//     }
+//     else if (topic == "command/train/start") {
+//         unsigned short direction = message["direction"];
+//         String train = message["train"];
 
-//     for (int i=400; i<speed; i=i+20) {
-//       analogWrite(PWMA, i);
-//       delay(50);
-//     }
-//     analogWrite(PWMA, speed);
+//         if (train == "A") {
+//             startA(direction);
+//         }
 
-//     sensorCount = 0;
-//   }
-//   else if (topic == "command/train/stop") {
-//     slowDown();
-//     stop();
-//   }
+//         if (train == "B") {
+//             startB(direction);
+//         }
+//     }
+//     else if (topic == "command/train/stop") {
+//         String train = message["train"];
+
+//         if (train == "A") {
+//             stopA();
+//         }
+
+//         if (train == "B") {
+//             stopB();
+//         }
+//     }
 // }
 
-// void slowDown() {
-//     for (int i=speed; i>100; i=i-20) {
-//       analogWrite(PWMA, i);
-//       delay(50);
-//     }
-// }
+// void setup() {
+//     Serial.begin(115200);
 
-// void stop() {
+//     pinMode(PWMA, OUTPUT);
+//     pinMode(DA, OUTPUT);
+//     pinMode(PWMB, OUTPUT);
+//     pinMode(DB, OUTPUT);
+
 //     analogWrite(PWMA, 0);
+//     analogWrite(PWMB, 0);
+
+//     client.begin();
+//     client.subscribe("command/train/#");
+// }
+
+// void loop() {
+//     client.loop();
 // }

@@ -55,12 +55,47 @@ def handler(topic, message):
         direction = random.randint(0,2)
         client.publish("command/ferris/setmode", {"circle":circle,"mode":mode,"colors":colors,"speed":speed,"direction":direction})
 
+# Ferris light:
+#   command/ferris/setmode {"colors": [array of 3 colors], "mode", "speed", "direction": [0,1,2]}
+#   command/ferris/setbrightness {"brightness": [0-255]}
+
+# Ferris motor:
+#   command/ferris/run {"duration", "pause"}
+
+# Rollercoaster:
+#   command/roller/run {}
+
+# Friends cave
+#   command/friends/run {"duration", "pause"}
+
+# Train A/B
+#   command/train/run {"direction": [0,1], "duration", "pause", "train": [A,B]"}
+
+# Julemand op/ned
+#   sallingaarhus/julemandop
+#   sallingaarhus/julemandned
+
+# Gyngestol
+#   sallingaarhus/gyngestolgyng
+
+# Status light
+#   command/status/on {"duration", "number": [0-6]}
+#   command/status/off {"number": [0-6]}
+#   command/ferris/setbrightness {"brightness": [0-255]}
+
+def runFerris() {
+    duration = 10
+    client.publish("command/ferris/run", {"duration": duration})
+    client.publish("command/status/on", {"duration": duration})
+}
+
 def subscriptions():
     client.subscribe("event/facedetected")
     client.subscribe("event/ferris/activated")
 
 client = MqttClient(handler, subscriptions)
 
+runFerris()
 
 ##client.publish("command/ferris/setmode", {"circle":True,"mode":44,"colors":[255],"speed":1000,"direction":0})
 ##client.publish("command/ferris/start", {"direction":0})

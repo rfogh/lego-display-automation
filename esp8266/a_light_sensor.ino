@@ -4,7 +4,7 @@
 // #include <WS2812FX.h>
 // #include <Ticker.h>
 
-// #define TOUCHPIN                        D5
+// #define SENSORPIN                       D5
 // #define PIXELPIN                        D3
 // #define NUMPIXELRING                    12
 // #define WAIT_FOR_START_MESSAGE_TIMEOUT  5
@@ -21,7 +21,7 @@
 // void setup() {
 //     Serial.begin(115200);
 
-//     pinMode(TOUCHPIN, INPUT);
+//     // pinMode(SENSORPIN, INPUT);
 
 //     pixels.init();
 //     pixels.setBrightness(10);
@@ -89,21 +89,28 @@
 // }
 
 // void readTouch() {
-//     if (!listeningForTouch) {
-//         return;
-//     }
+//     // if (!listeningForTouch) {
+//     //     return;
+//     // }
 
-//     int touched = digitalRead(TOUCHPIN);
-//     if(touched == HIGH) {
-//         listeningForTouch = false;
-//         pixels.setColor(GREEN);
-//         pixels.setMode(FX_MODE_STATIC);
-//         ticker.attach(WAIT_FOR_START_MESSAGE_TIMEOUT, listenForTouch);
+//     int light = analogRead(SENSORPIN);
 
-//         StaticJsonBuffer<40> jsonBuffer;
-//         JsonObject& event = jsonBuffer.createObject();
-//         event["clientid"] = client.getClientId();
+//     Serial.println("light: ");
+//     Serial.print(light);
+//     Serial.println("");
+    
 
-//         client.publish("event/touch/touched", event);
-//     }
+//     // int touched = digitalRead(SENSORPIN);
+//     // if(touched == HIGH) {
+//     //     listeningForTouch = false;
+//     //     pixels.setColor(GREEN);
+//     //     pixels.setMode(FX_MODE_STATIC);
+//     //     ticker.attach(WAIT_FOR_START_MESSAGE_TIMEOUT, listenForTouch);
+
+//     //     StaticJsonBuffer<40> jsonBuffer;
+//     //     JsonObject& event = jsonBuffer.createObject();
+//     //     event["clientid"] = client.getClientId();
+
+//     //     client.publish("event/touch/touched", event);
+//     // }
 // }

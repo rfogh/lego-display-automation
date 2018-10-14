@@ -1,7 +1,7 @@
 {
     "board": "esp8266:esp8266:nodemcuv2",
     "configuration": "CpuFrequency=80,VTable=flash,FlashSize=4M1M,LwIPVariant=v2mss536,Debug=Serial,DebugLevel=CORE,FlashErase=sdk,UploadSpeed=115200",
-    "sketch": "esp8266\\a_ferris_touch.ino",
+    "sketch": "esp8266\\a_friends_cave.ino",
     "port": "COM7",
     "output": "esp8266-build"
 }
