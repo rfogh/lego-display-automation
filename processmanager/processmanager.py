@@ -44,17 +44,6 @@ def getRandomColor():
         color = random.randint(0,1)*0xFF0000 + random.randint(0,1)*0xFF00 + random.randint(0,1)*0xFF
     return color
 
-def handler(topic, message):
-    if (topic == "event/ferris/activated"):
-        client.publish("command/ferris/run", {"direction":0, "duration":10, "pause":5})
-    elif (topic == "event/facedetected"):
-        circle = random.randint(0,1) == 1
-        mode = random.randint(0,55)
-        colors = [getRandomColor(), getRandomColor(), getRandomColor()]
-        speed = 1000 if circle else 7000
-        direction = random.randint(0,2)
-        client.publish("command/ferris/setmode", {"circle":circle,"mode":mode,"colors":colors,"speed":speed,"direction":direction})
-
 # Ferris light:
 #   command/ferris/setmode {"colors": [array of 3 colors], "mode", "speed", "direction": [0,1,2]}
 #   command/ferris/setbrightness {"brightness": [0-255]}
@@ -130,25 +119,34 @@ def runTrainB():
     client.publish("command/train/run", {"duration": duration, "train":"B"})
     client.publish("command/status/on", {"duration": duration, "number":6})
 
+def changeLight():
+    changeFerris()
+    threading.Timer(20, changeLight).start()
+
+def handler(topic, message):
+    if (topic == "event/facedetected"):
+        var activity = random.randint(0,6)
+        if (activity == 0):
+            runSkorsten()
+        elif (activity == 1):
+            runFerris()
+        elif (activity == 2):
+            runRocking()
+        elif (activity == 3):
+            runRoller()
+        elif (activity == 4):
+            runTrainA()
+        elif (activity == 5):
+            runFriends()
+        elif (activity == 6):
+            runTrainB()
+
 
 def subscriptions():
     client.subscribe("event/facedetected")
 
 client = MqttClient(handler, subscriptions)
 
-changeFerris()
-runSkorsten()
-time.sleep(2)
-runFerris()
-time.sleep(12)
-runRocking()
-time.sleep(12)
-runRoller()
-time.sleep(12)
-runTrainA()
-time.sleep(12)
-runFriends()
-time.sleep(12)
-runTrainB()
+changeLight()
 
-#client.loop_forever()
+client.loop_forever()

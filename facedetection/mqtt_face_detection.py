@@ -47,7 +47,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr"):
     
     if len(faces) > 0:
         client.publish("event/facedetected", len(faces))
-        time.sleep(4)
+        time.sleep(15)
     
     # clear the stream in preparation for the next frame
     rawCapture.truncate(0)

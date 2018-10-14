@@ -7,8 +7,10 @@
 // #define NUMSTRIP      12
 // #define NUMPIXELS     8
 
+// void handler(String topic, JsonObject& message);
+
 // WS2812FX pixels = WS2812FX(NUMSTRIP*NUMPIXELS, PIN, NEO_GRB+NEO_KHZ800);
-// MqttClient *client;
+// MqttClient client(handler);
   
 // void handler(String topic, JsonObject& message) {
 //   if (topic == "command/ferris/setmode") {
@@ -30,12 +32,12 @@
 //       pixels.setSegment(0, 0, NUMSTRIP*NUMPIXELS-1, mode, colors, speed, direction==1);
 //     }
 
-//     client->publish("event/ferris/modeset");
+//     client.publish("event/ferris/modeset");
 //   }
 //   else if (topic == "command/ferris/setbrightness") {
 //     pixels.setBrightness(message["brightness"]);
 
-//     client->publish("event/ferris/brightnessset");
+//     client.publish("event/ferris/brightnessset");
 //   }
 // }
 
@@ -49,11 +51,11 @@
 //   pixels.setMode(FX_MODE_STATIC);
 //   pixels.start();
 
-//   client = new MqttClient(handler);
-//   client->subscribe("command/ferris/#");
+//   client.begin();
+//   client.subscribe("command/ferris/#");
 // }
 
 // void loop() {
 //   pixels.service();
-//   client->loop();
+//   client.loop();
 // }
