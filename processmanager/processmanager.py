@@ -83,8 +83,16 @@ def handler(topic, message):
 #   command/status/off {"number": [0-6]}
 #   command/ferris/setbrightness {"brightness": [0-255]}
 
+def changeFerris():
+    circle = random.randint(0,1) == 1
+    mode = random.randint(0,55)
+    colors = [getRandomColor(), getRandomColor(), getRandomColor()]
+    speed = 1000 if circle else 7000
+    direction = random.randint(0,2)
+    client.publish("command/ferris/setmode", {"circle":circle,"mode":mode,"colors":colors,"speed":speed,"direction":direction})
+
 def runSkorsten():
-    duration = 10
+    duration = 15
     client.publish("sallingaarhus/julemandop", {})
     client.publish("command/status/on", {"number":0})
     time.sleep(duration-2)
@@ -125,10 +133,10 @@ def runTrainB():
 
 def subscriptions():
     client.subscribe("event/facedetected")
-    client.subscribe("event/ferris/activated")
 
 client = MqttClient(handler, subscriptions)
 
+changeFerris()
 runSkorsten()
 time.sleep(2)
 runFerris()
@@ -142,6 +150,5 @@ time.sleep(12)
 runFriends()
 time.sleep(12)
 runTrainB()
-
 
 #client.loop_forever()
