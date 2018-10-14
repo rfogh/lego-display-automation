@@ -125,7 +125,7 @@ def changeLight():
 
 def handler(topic, message):
     if (topic == "event/facedetected"):
-        var activity = random.randint(0,6)
+        activity = random.randint(0,6)
         if (activity == 0):
             runSkorsten()
         elif (activity == 1):
