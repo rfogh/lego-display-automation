@@ -8,6 +8,9 @@
 // #define PWMB         D2
 // #define DB           D4
 
+// #define MAX_POWER_A  1023
+// #define MAX_POWER_B  1023
+
 // void handler(String topic, JsonObject& message);
 
 // MqttClient client(handler);
@@ -27,11 +30,11 @@
 //     event["train"] = "A";
 //     client.publish("event/train/started", event);
 
-//     for (int i=600; i<PWMRANGE; i=i+20) {
+//     for (int i=600; i<MAX_POWER_A; i=i+20) {
 //         analogWrite(PWMA, i);
 //         delay(50);
 //     }
-//     analogWrite(PWMA, PWMRANGE);
+//     analogWrite(PWMA, MAX_POWER_A);
 // }
 
 // void startB(unsigned short direction, unsigned short duration = 0) {
@@ -47,15 +50,15 @@
 //     event["train"] = "B";
 //     client.publish("event/train/started", event);
 
-//     for (int i=600; i<PWMRANGE; i=i+20) {
+//     for (int i=600; i<MAX_POWER_B; i=i+20) {
 //         analogWrite(PWMB, i);
 //         delay(50);
 //     }
-//     analogWrite(PWMB, PWMRANGE);
+//     analogWrite(PWMB, MAX_POWER_B);
 // }
 
 // void stopA(unsigned short pause = 0) {
-//     for (int i=PWMRANGE; i>600; i=i-20) {
+//     for (int i=MAX_POWER_A; i>600; i=i-20) {
 //         analogWrite(PWMA, i);
 //         delay(50);
 //     }
@@ -69,7 +72,7 @@
 // }
 
 // void stopB(unsigned short pause = 0) {
-//     for (int i=PWMRANGE; i>600; i=i-20) {
+//     for (int i=MAX_POWER_B; i>600; i=i-20) {
 //         analogWrite(PWMB, i);
 //         delay(50);
 //     }
