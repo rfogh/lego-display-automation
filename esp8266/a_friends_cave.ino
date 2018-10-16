@@ -16,14 +16,13 @@
 // Ticker ticker;
 
 // void start(unsigned short duration = 0) {
+//     digitalWrite(DA, 1);
 //     analogWrite(PWMA, PWMRANGE);
-//     digitalWrite(DA, HIGH);
-//     delay(duration/2);
-//     digitalWrite(DA, LOW);
+//     delay(duration);
+//     digitalWrite(DA, 0);
 // }
 
 // void stop() {
-//     ticker.detach();
 //     analogWrite(PWMA, 0);
 // }
 
@@ -31,8 +30,7 @@
 //     if (topic == "command/friends/run") {
 //         unsigned short duration = message["duration"];
 
-//         ticker.attach(duration, stop);
-
+//         ticker.once(duration+duration, stop);
 //         start(duration);
 //     }
 // }

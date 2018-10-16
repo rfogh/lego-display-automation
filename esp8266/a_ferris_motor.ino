@@ -8,7 +8,9 @@
 // #define PWMB         D2
 // #define DB           D4
 
-// MqttClient *client = NULL;
+// void handler(String topic, JsonObject& message);
+
+// MqttClient client(handler);
 // Ticker ticker;
 
 // void start(unsigned short direction, unsigned short duration = 0) {
@@ -18,10 +20,10 @@
 //         digitalWrite(DA, HIGH);
 //     }
 
-//     StaticJsonBuffer<200> jsonBuffer;
-//     JsonObject& event = jsonBuffer.createObject();
-//     event["duration"] = duration;
-//     client->publish("event/ferris/started", event);
+//     // StaticJsonBuffer<200> jsonBuffer;
+//     // JsonObject& event = jsonBuffer.createObject();
+//     // event["duration"] = duration;
+//     // client.publish("event/ferris/started", event);
 
 //     for (int i=600; i<PWMRANGE; i=i+20) {
 //         analogWrite(PWMA, i);
@@ -31,17 +33,16 @@
 // }
 
 // void stop(unsigned short pause = 0) {
-//     ticker.detach();
 //     for (int i=PWMRANGE; i>600; i=i-20) {
 //         analogWrite(PWMA, i);
 //         delay(50);
 //     }
 //     analogWrite(PWMA, 0);
 
-//     StaticJsonBuffer<200> jsonBuffer;
-//     JsonObject& event = jsonBuffer.createObject();
-//     event["pause"] = pause;
-//     client->publish("event/ferris/stopped", event);
+//     // StaticJsonBuffer<200> jsonBuffer;
+//     // JsonObject& event = jsonBuffer.createObject();
+//     // event["pause"] = pause;
+//     // client->publish("event/ferris/stopped", event);
 // }
 
 // void handler(String topic, JsonObject& message) {
@@ -50,7 +51,7 @@
 //         unsigned short duration = message["duration"];
 //         unsigned short pause = message["pause"];
 
-//         ticker.attach(duration, stop, pause);
+//         ticker.once(duration, stop, pause);
 
 //         start(direction, duration);
 //     }
@@ -74,20 +75,10 @@
 //     analogWrite(PWMA, 0);
 //     analogWrite(PWMB, 0);
 
-//     client = new MqttClient(handler);
-//     client->subscribe("command/ferris/#");
+//     client.begin();
+//     client.subscribe("command/ferris/#");
 // }
 
 // void loop() {
-//     client->loop();
-
-//     delay(2000);
-//     analogWrite(PWMA, PWMRANGE);
-//     delay(2000);
-//     analogWrite(PWMA, 0);
-//     delay(2000);
-//     analogWrite(PWMB, PWMRANGE);
-//     delay(2000);
-//     analogWrite(PWMB, 0);
-//     delay(2000);
+//     client.loop();
 // }

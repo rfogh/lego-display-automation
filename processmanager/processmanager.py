@@ -74,11 +74,11 @@ def getRandomColor():
 #   command/ferris/setbrightness {"brightness": [0-255]}
 
 def runSkorsten():
-    duration = 13
+    duration = 18
     client.publish("command/status/on", {"duration":duration, "number":0})
     time.sleep(1)
     client.publish("sallingaarhus/julemandop", {})
-    time.sleep(10)
+    time.sleep(15)
     client.publish("sallingaarhus/julemandned", {})
 
 def runFerris():
@@ -88,7 +88,7 @@ def runFerris():
     client.publish("command/ferris/run", {"duration": duration})
 
 def runRocking():
-    duration = 20
+    duration = 30
     client.publish("command/status/on", {"duration": duration, "number":2})
     time.sleep(1)
     client.publish("sallingaarhus/gyngestolgyng", {})
@@ -107,9 +107,9 @@ def runTrainA():
 
 def runFriends():
     duration = 20
-    client.publish("command/status/on", {"duration": duration, "number":5})
+    # client.publish("command/status/on", {"duration": duration, "number":5})
     time.sleep(1)
-    client.publish("command/friends/run", {"duration": duration})
+    # client.publish("command/friends/run", {"duration": duration})
 
 def runTrainB():
     duration = 20
@@ -150,20 +150,6 @@ def handler(topic, message):
         activate(activity)
     elif (topic == "command/activate"):
         activate(message["number"])
-    # elif (topic == "command/activate/0"):
-    #     activate(0)
-    # elif (topic == "command/activate/1"):
-    #     activate(1)
-    # elif (topic == "command/activate/2"):
-    #     activate(2)
-    # elif (topic == "command/activate/3"):
-    #     activate(3)
-    # elif (topic == "command/activate/4"):
-    #     activate(4)
-    # elif (topic == "command/activate/5"):
-    #     activate(5)
-    # elif (topic == "command/activate/6"):
-    #     activate(6)
 
 
 def subscriptions():
