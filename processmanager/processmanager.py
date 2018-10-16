@@ -73,11 +73,14 @@ def getRandomColor():
 #   command/status/off {"number": [0-6]}
 #   command/ferris/setbrightness {"brightness": [0-255]}
 
+def julemandned():
+    client.publish("sallingaarhus/julemandned",{})
+
 def runSkorsten():
     duration = 20
     client.publish("sallingaarhus/julemandop", {})
     client.publish("command/status/on", {"duration":duration, "number":0})
-    threading.Timer(float(duration-3), client.publish, ("sallingaarhus/julemandned", {}))
+    threading.Timer(17.0, julemandned)
 
 def runFerris():
     duration = 20
