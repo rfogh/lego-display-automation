@@ -77,10 +77,11 @@ def julemandned():
     client.publish("sallingaarhus/julemandned",{})
 
 def runSkorsten():
-    duration = 20
+    duration = 13
     client.publish("sallingaarhus/julemandop", {})
     client.publish("command/status/on", {"duration":duration, "number":0})
-    threading.Timer(17.0, julemandned)
+    time.sleep(10)
+    julemandned
 
 def runFerris():
     duration = 20
