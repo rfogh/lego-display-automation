@@ -109,13 +109,13 @@ def runTrainB():
     client.publish("command/train/run", {"duration": duration, "train":"B"})
     client.publish("command/status/on", {"duration": duration, "number":6})
 
-timerToActivateIfNoActivity = Timer(900.0, activate, (random.randint(0,6)))
+timerToActivateIfNoActivity = threading.Timer(900.0, activate, (random.randint(0,6)))
 timerToActivateIfNoActivity.start()
 
 def activate(activity):
     if (timerToActivateIfNoActivity.is_alive()):
         timerToActivateIfNoActivity.cancel()
-    timerToActivateIfNoActivity = Timer(900.0, activate, (random.randint(0,6)))
+    timerToActivateIfNoActivity = threading.Timer(900.0, activate, (random.randint(0,6)))
     timerToActivateIfNoActivity.start()
 
     if (activity == 0):
