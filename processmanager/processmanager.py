@@ -73,45 +73,49 @@ def getRandomColor():
 #   command/status/off {"number": [0-6]}
 #   command/ferris/setbrightness {"brightness": [0-255]}
 
-def julemandned():
-    client.publish("sallingaarhus/julemandned",{})
-
 def runSkorsten():
     duration = 13
-    client.publish("sallingaarhus/julemandop", {})
     client.publish("command/status/on", {"duration":duration, "number":0})
+    time.sleep(0.2)
+    client.publish("sallingaarhus/julemandop", {})
     time.sleep(10)
-    julemandned
+    client.publish("sallingaarhus/julemandned", {})
 
 def runFerris():
     duration = 20
-    client.publish("command/ferris/run", {"duration": duration})
     client.publish("command/status/on", {"duration": duration, "number":1})
+    time.sleep(0.2)
+    client.publish("command/ferris/run", {"duration": duration})
 
 def runRocking():
-    duration = 10
-    client.publish("sallingaarhus/gyngestolgyng", {})
+    duration = 20
     client.publish("command/status/on", {"duration": duration, "number":2})
+    time.sleep(0.2)
+    client.publish("sallingaarhus/gyngestolgyng", {})
 
 def runRoller():
-    duration = 20
-    client.publish("command/roller/run", {})
+    duration = 13
     client.publish("command/status/on", {"duration": duration, "number":3})
+    time.sleep(0.2)
+    client.publish("command/roller/run", {})
 
 def runTrainA():
     duration = 20
-    client.publish("command/train/run", {"duration": duration, "train":"A"})
     client.publish("command/status/on", {"duration": duration, "number":4})
+    time.sleep(0.2)
+    client.publish("command/train/run", {"duration": duration, "train":"A"})
 
 def runFriends():
     duration = 20
-    client.publish("command/friends/run", {"duration": duration})
     client.publish("command/status/on", {"duration": duration, "number":5})
+    time.sleep(0.2)
+    client.publish("command/friends/run", {"duration": duration})
 
 def runTrainB():
     duration = 20
-    client.publish("command/train/run", {"duration": duration, "train":"B"})
     client.publish("command/status/on", {"duration": duration, "number":6})
+    time.sleep(0.2)
+    client.publish("command/train/run", {"duration": duration, "train":"B"})
 
 timerToActivateIfNoActivity = threading.Timer(20.0, runFerris)
 
