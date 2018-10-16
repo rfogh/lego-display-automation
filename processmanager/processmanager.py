@@ -112,6 +112,7 @@ def runTrainB():
 timerToActivateIfNoActivity = threading.Timer(20.0, runFerris)
 
 def activate(activity):
+    global timerToActivateIfNoActivity
     if (timerToActivateIfNoActivity.is_alive()):
         timerToActivateIfNoActivity.cancel()
     timerToActivateIfNoActivity = threading.Timer(900.0, activate, (random.randint(0,6)))
