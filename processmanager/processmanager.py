@@ -137,14 +137,25 @@ def handler(topic, message):
     if (topic == "event/facedetected"):
         activity = random.randint(0,6)
         activate(activity)
-    elif (topic == "command/activate"):
-        activity = message["number"]
-        activate(activity)
+    elif (topic == "command/activate/0"):
+        activate(0)
+    elif (topic == "command/activate/1"):
+        activate(1)
+    elif (topic == "command/activate/2"):
+        activate(2)
+    elif (topic == "command/activate/3"):
+        activate(3)
+    elif (topic == "command/activate/4"):
+        activate(4)
+    elif (topic == "command/activate/5"):
+        activate(5)
+    elif (topic == "command/activate/6"):
+        activate(6)
 
 
 def subscriptions():
     client.subscribe("event/facedetected")
-    client.subscribe("command/activate")
+    client.subscribe("command/activate/#")
 
 client = MqttClient(handler, subscriptions)
 client.loop_forever()
