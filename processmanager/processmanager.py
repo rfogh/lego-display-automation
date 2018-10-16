@@ -109,6 +109,8 @@ def runTrainB():
     client.publish("command/train/run", {"duration": duration, "train":"B"})
     client.publish("command/status/on", {"duration": duration, "number":6})
 
+timerToActivateIfNoActivity = threading.Timer(20.0, runFerris)
+
 def activate(activity):
     if (timerToActivateIfNoActivity.is_alive()):
         timerToActivateIfNoActivity.cancel()
@@ -137,25 +139,27 @@ def handler(topic, message):
     if (topic == "event/facedetected"):
         activity = random.randint(0,6)
         activate(activity)
-    elif (topic == "command/activate/0"):
-        activate(0)
-    elif (topic == "command/activate/1"):
-        activate(1)
-    elif (topic == "command/activate/2"):
-        activate(2)
-    elif (topic == "command/activate/3"):
-        activate(3)
-    elif (topic == "command/activate/4"):
-        activate(4)
-    elif (topic == "command/activate/5"):
-        activate(5)
-    elif (topic == "command/activate/6"):
-        activate(6)
+    elif (topic == "command/activate"):
+        activate(message["number"])
+    # elif (topic == "command/activate/0"):
+    #     activate(0)
+    # elif (topic == "command/activate/1"):
+    #     activate(1)
+    # elif (topic == "command/activate/2"):
+    #     activate(2)
+    # elif (topic == "command/activate/3"):
+    #     activate(3)
+    # elif (topic == "command/activate/4"):
+    #     activate(4)
+    # elif (topic == "command/activate/5"):
+    #     activate(5)
+    # elif (topic == "command/activate/6"):
+    #     activate(6)
 
 
 def subscriptions():
     client.subscribe("event/facedetected")
-    client.subscribe("command/activate/#")
+    client.subscribe("command/activate")
 
 client = MqttClient(handler, subscriptions)
 client.loop_forever()
