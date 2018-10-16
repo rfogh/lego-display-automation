@@ -1,61 +1,61 @@
-/* MOTOR AND LIGHT CONTROL FOR FRIENDS CAVE */
+// /* MOTOR AND LIGHT CONTROL FOR FRIENDS CAVE */
 
-#include "MqttClient.h"
-#include <Ticker.h>
+// #include "MqttClient.h"
+// #include <Ticker.h>
 
-#define PWMA         D1
-#define DA           D3
-#define PWMB         D2
-#define DB           D4
-#define CAVE_LIGHT   D8
-#define CAVE_BLOW    D5
+// #define PWMA         D1
+// #define DA           D3
+// #define PWMB         D2
+// #define DB           D4
+// #define CAVE_LIGHT   D8
+// #define CAVE_BLOW    D5
 
-void handler(String topic, JsonObject& message);
+// void handler(String topic, JsonObject& message);
 
-MqttClient client(handler);
-Ticker ticker;
+// MqttClient client(handler);
+// Ticker ticker;
 
-void start(unsigned short duration = 0) {
-    analogWrite(PWMA, PWMRANGE);
-    digitalWrite(DA, HIGH);
-    delay(duration/2);
-    digitalWrite(DA, LOW);
-}
+// void start(unsigned short duration = 0) {
+//     analogWrite(PWMA, PWMRANGE);
+//     digitalWrite(DA, HIGH);
+//     delay(duration/2);
+//     digitalWrite(DA, LOW);
+// }
 
-void stop() {
-    ticker.detach();
-    analogWrite(PWMA, 0);
-}
+// void stop() {
+//     ticker.detach();
+//     analogWrite(PWMA, 0);
+// }
 
-void handler(String topic, JsonObject& message) {
-    if (topic == "command/friends/run") {
-        unsigned short duration = message["duration"];
+// void handler(String topic, JsonObject& message) {
+//     if (topic == "command/friends/run") {
+//         unsigned short duration = message["duration"];
 
-        ticker.attach(duration, stop);
+//         ticker.attach(duration, stop);
 
-        start(duration);
-    }
-}
+//         start(duration);
+//     }
+// }
 
-void setup() {
-    Serial.begin(115200);
+// void setup() {
+//     Serial.begin(115200);
 
-    pinMode(PWMA, OUTPUT);
-    pinMode(DA, OUTPUT);
-    pinMode(PWMB, OUTPUT);
-    pinMode(DB, OUTPUT);
-    pinMode(CAVE_LIGHT, OUTPUT);
-    pinMode(CAVE_BLOW, OUTPUT);
+//     pinMode(PWMA, OUTPUT);
+//     pinMode(DA, OUTPUT);
+//     pinMode(PWMB, OUTPUT);
+//     pinMode(DB, OUTPUT);
+//     pinMode(CAVE_LIGHT, OUTPUT);
+//     pinMode(CAVE_BLOW, OUTPUT);
 
-    analogWrite(PWMA, 0);
-    analogWrite(PWMB, 0);
+//     analogWrite(PWMA, 0);
+//     analogWrite(PWMB, 0);
 
-    digitalWrite(CAVE_LIGHT, HIGH);
+//     digitalWrite(CAVE_LIGHT, HIGH);
 
-    client.begin();
-    client.subscribe("command/friends/#");
-}
+//     client.begin();
+//     client.subscribe("command/friends/#");
+// }
 
-void loop() {
-    client.loop();
-}
+// void loop() {
+//     client.loop();
+// }

@@ -77,7 +77,7 @@ def runSkorsten():
     duration = 20
     client.publish("sallingaarhus/julemandop", {})
     client.publish("command/status/on", {"duration":duration, "number":0})
-    Timer(duration-3, client.publish, ("sallingaarhus/julemandned", {}))
+    threading.Timer(duration-3, client.publish, ("sallingaarhus/julemandned", {}))
 
 def runFerris():
     duration = 20
