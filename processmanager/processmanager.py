@@ -138,7 +138,7 @@ def handler(topic, message):
         activity = random.randint(0,6)
         activate(activity)
     elif (topic == "command/activate"):
-        activity = message.number
+        activity = message["number"]
         activate(activity)
 
 
