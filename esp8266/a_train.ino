@@ -8,8 +8,8 @@
 // #define PWMB         D2
 // #define DB           D4
 
-// #define MAX_POWER_A  1023
-// #define MAX_POWER_B  1023
+// #define MAX_POWER_A  750
+// #define MAX_POWER_B  800
 
 // void handler(String topic, JsonObject& message);
 

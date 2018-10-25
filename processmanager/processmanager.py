@@ -39,12 +39,6 @@ class MqttClient:
     def loop_forever(self):
         self.client.loop_forever()
 
-def getRandomColor():
-    color = 0
-    while color == 0:
-        color = random.randint(0,1)*0xFF0000 + random.randint(0,1)*0xFF00 + random.randint(0,1)*0xFF
-    return color
-
 # Ferris light:
 #   command/ferris/setmode {"colors": [array of 3 colors], "mode", "speed", "direction": [0,1,2]}
 #   command/ferris/setbrightness {"brightness": [0-255]}
@@ -74,72 +68,88 @@ def getRandomColor():
 #   command/ferris/setbrightness {"brightness": [0-255]}
 
 def runSkorsten():
-    duration = 18
+    duration = 12
     client.publish("command/status/on", {"duration":duration, "number":0})
     time.sleep(1)
     client.publish("sallingaarhus/julemandop", {})
-    time.sleep(15)
     client.publish("sallingaarhus/julemandned", {})
+    return duration
 
 def runFerris():
     duration = 20
     client.publish("command/status/on", {"duration": duration, "number":1})
     time.sleep(1)
     client.publish("command/ferris/run", {"duration": duration})
+    return duration
 
 def runRocking():
     duration = 30
     client.publish("command/status/on", {"duration": duration, "number":2})
     time.sleep(1)
     client.publish("sallingaarhus/gyngestolgyng", {})
+    return duration
 
 def runRoller():
     duration = 13
     client.publish("command/status/on", {"duration": duration, "number":3})
     time.sleep(1)
     client.publish("command/roller/run", {})
+    return duration
 
 def runTrainA():
     duration = 20
     client.publish("command/status/on", {"duration": duration, "number":4})
     time.sleep(1)
     client.publish("command/train/run", {"duration": duration, "train":"A"})
+    return duration
 
 def runFriends():
     duration = 20
     # client.publish("command/status/on", {"duration": duration, "number":5})
     time.sleep(1)
     # client.publish("command/friends/run", {"duration": duration})
+    return 0
 
 def runTrainB():
     duration = 20
     client.publish("command/status/on", {"duration": duration, "number":6})
     time.sleep(1)
     client.publish("command/train/run", {"duration": duration, "train":"B"})
+    return duration
 
-timerToActivateIfNoActivity = threading.Timer(20.0, runFerris)
+timerToActivateIfNoActivity = threading.Timer(200.0, runFerris)
+nextRunningTime = time.time()
+
 
 def activate(activity):
+    global nextRunningTime
     global timerToActivateIfNoActivity
+
+    if (time.time() < nextRunningTime):
+        return
+
     if (timerToActivateIfNoActivity.is_alive()):
         timerToActivateIfNoActivity.cancel()
     timerToActivateIfNoActivity = threading.Timer(900.0, activate, (random.randint(0,6)))
     timerToActivateIfNoActivity.start()
 
+    duration = 0
     if (activity == 0):
-        runSkorsten()
+        duration = runSkorsten()
     elif (activity == 1):
-        runFerris()
+        duration = runFerris()
     elif (activity == 2):
-        runRocking()
+        duration = runRocking()
     elif (activity == 3):
-        runRoller()
+        duration = runRoller()
     elif (activity == 4):
-        runTrainA()
+        duration = runTrainA()
     elif (activity == 5):
-        runFriends()
+        duration = runFriends()
     elif (activity == 6):
-        runTrainB()
+        duration = runTrainB()
+
+    nextRunningTime = time.time() + duration
 
 timerToActivateIfNoActivity = threading.Timer(900.0, activate, (random.randint(0,6)))
 timerToActivateIfNoActivity.start()
