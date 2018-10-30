@@ -21,22 +21,16 @@ unsigned int getRandomColor() {
 void changeLight() {
     pixels.resetSegments();
 
-    unsigned short modes[9] = {
-      FX_MODE_CHASE_RAINBOW,
+    unsigned short modes[4] = {
       FX_MODE_COMET,
       FX_MODE_FIREWORKS,
       FX_MODE_FIREWORKS_RANDOM,
-      FX_MODE_FLASH_SPARKLE,
-      FX_MODE_RAINBOW_CYCLE,
-      FX_MODE_SPARKLE,
-      FX_MODE_TWINKLE,
-      FX_MODE_TWINKLE_RANDOM
+      FX_MODE_FLASH_SPARKLE
     };
 
     unsigned int colors[3] = {getRandomColor(), getRandomColor(), getRandomColor()};
-    // unsigned int colors[3] = {RED, GREEN, YELLOW};
     bool circle = random(2) == 1;
-    unsigned short mode = modes[random(9)];
+    unsigned short mode = modes[random(4)];
     unsigned short speed = circle ? 1000 : 7000;
     unsigned short direction = random(3);
 
