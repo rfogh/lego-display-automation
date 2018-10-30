@@ -117,21 +117,13 @@ def runTrainB():
     client.publish("command/train/run", {"duration": duration, "train":"B"})
     return duration
 
-timerToActivateIfNoActivity = threading.Timer(200.0, runFerris)
 nextRunningTime = time.time()
 
 
 def activate(activity):
     global nextRunningTime
-    global timerToActivateIfNoActivity
-
     if (time.time() < nextRunningTime):
         return
-
-    if (timerToActivateIfNoActivity.is_alive()):
-        timerToActivateIfNoActivity.cancel()
-    timerToActivateIfNoActivity = threading.Timer(900.0, activate, (random.randint(0,6)))
-    timerToActivateIfNoActivity.start()
 
     duration = 0
     if (activity == 0):
@@ -150,9 +142,6 @@ def activate(activity):
         duration = runTrainB()
 
     nextRunningTime = time.time() + duration
-
-timerToActivateIfNoActivity = threading.Timer(900.0, activate, (random.randint(0,6)))
-timerToActivateIfNoActivity.start()
 
 def handler(topic, message):
     if (topic == "event/facedetected"):

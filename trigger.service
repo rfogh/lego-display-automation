@@ -1,0 +1,13 @@
+[Unit]
+Description=Emit a facedetected event every 10 minutes to make something move
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'mosquitto_pub -h 192.168.1.2 -t "event/facedetected" -m "0"'
+Restart=always
+RestartSec=600
+
+[Install]
+WantedBy=multi-user.target
+
