@@ -1,0 +1,13 @@
+[Unit]
+Description=Log faces detected, timestamp and face count
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'mosquitto_sub -h 192.168.1.2 -t "event/facedetected" -F "[@Y-@M-@D @H:@M:@S] %p" > /home/pi/faces.log'
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
