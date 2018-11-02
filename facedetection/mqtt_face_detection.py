@@ -52,6 +52,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr"):
     # clear the stream in preparation for the next frame
     rawCapture.truncate(0)
     
-    time.sleep(1)
+    time.sleep(0.3)
         
 client.loop_stop()
