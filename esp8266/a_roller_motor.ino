@@ -61,8 +61,8 @@
 
 //     startBottom();
 //     topStartTicker.attach(4, startTop);
-//     bottomStopTicker.attach(7, stopBottom);
-//     topStopTicker.attach(8, stopTop);
+//     bottomStopTicker.attach(9, stopBottom);
+//     topStopTicker.attach(10, stopTop);
 
 //     JsonObject& stopEvent = jsonBuffer.createObject();
 //     stopEvent["pause"] = pause;

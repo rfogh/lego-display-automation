@@ -143,10 +143,17 @@ def activate(activity):
 
     nextRunningTime = time.time() + duration
 
+nextActivity = 0
+
 def handler(topic, message):
+    global nextActivity
     if (topic == "event/facedetected"):
-        activity = random.randint(0,6)
-        activate(activity)
+        activate(nextActivity)
+        nextActivity = nextActivity + 1
+        if (nextActivity == 5)
+            nextActivity = 6
+        elif (nextActivity > 6)
+            nextActivity = 0
     elif (topic == "command/activate"):
         activate(message["number"])
 

@@ -1,0 +1,13 @@
+[Unit]
+Description=Triggers every minute at daytime and every 15 minutes at night.
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/pi/lego-display-automation/timetrigger.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
