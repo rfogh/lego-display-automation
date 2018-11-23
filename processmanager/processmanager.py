@@ -117,14 +117,8 @@ def runTrainB():
     client.publish("command/train/run", {"duration": duration, "train":"B"})
     return duration
 
-nextRunningTime = time.time()
-
 
 def activate(activity):
-    global nextRunningTime
-    if (time.time() < nextRunningTime):
-        return
-
     duration = 0
     if (activity == 0):
         duration = runSkorsten()
@@ -141,21 +135,31 @@ def activate(activity):
     elif (activity == 6):
         duration = runTrainB()
 
-    nextRunningTime = time.time() + duration
+    return duration
 
+
+nextRunningTime = time.time()
 nextActivity = 0
 
 def handler(topic, message):
     global nextActivity
+    global nextRunningTime
+    duration = 0
+    if (time.time() < nextRunningTime):
+        return
+
     if (topic == "event/facedetected"):
-        activate(nextActivity)
+        duration = activate(nextActivity)
         nextActivity = nextActivity + 1
-        if (nextActivity == 5)
+        if (nextActivity == 5):
             nextActivity = 6
-        elif (nextActivity > 6)
+        elif (nextActivity > 6):
             nextActivity = 0
     elif (topic == "command/activate"):
-        activate(message["number"])
+        duration = activate(message["number"])
+
+    nextRunningTime = time.time() + duration
+
 
 
 def subscriptions():

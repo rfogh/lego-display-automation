@@ -1,60 +1,60 @@
-/* Light control for Ferris wheel */
+// /* Light control for Ferris wheel */
 
-#include <WS2812FX.h>
-#include <Ticker.h>
+// #include <WS2812FX.h>
+// #include <Ticker.h>
 
-#define PIN           D6
-#define NUMSTRIP      12
-#define NUMPIXELS     8
+// #define PIN           D6
+// #define NUMSTRIP      12
+// #define NUMPIXELS     8
 
-WS2812FX pixels = WS2812FX(NUMSTRIP*NUMPIXELS, PIN, NEO_GRB+NEO_KHZ800);
-Ticker ticker;
+// WS2812FX pixels = WS2812FX(NUMSTRIP*NUMPIXELS, PIN, NEO_GRB+NEO_KHZ800);
+// Ticker ticker;
 
-unsigned int getRandomColor() {
-    unsigned int color = 0;
-    while (color == 0 || color == 0xFFFFFF) {
-        color = random(2)*0xFF0000 + random(2)*0x00FF00 + random(2)*0x0000FF;
-    }
-    return color;
-}
+// unsigned int getRandomColor() {
+//     unsigned int color = 0;
+//     while (color == 0 || color == 0xFFFFFF) {
+//         color = random(2)*0xFF0000 + random(2)*0x00FF00 + random(2)*0x0000FF;
+//     }
+//     return color;
+// }
 
-void changeLight() {
-    pixels.resetSegments();
+// void changeLight() {
+//     pixels.resetSegments();
 
-    unsigned short modes[4] = {
-      FX_MODE_COMET,
-      FX_MODE_FIREWORKS,
-      FX_MODE_FIREWORKS_RANDOM,
-      FX_MODE_FLASH_SPARKLE
-    };
+//     unsigned short modes[4] = {
+//       FX_MODE_COMET,
+//       FX_MODE_FIREWORKS,
+//       FX_MODE_FIREWORKS_RANDOM,
+//       FX_MODE_FLASH_SPARKLE
+//     };
 
-    unsigned int colors[3] = {getRandomColor(), getRandomColor(), getRandomColor()};
-    bool circle = random(2) == 1;
-    unsigned short mode = modes[random(4)];
-    unsigned short speed = circle ? 1000 : 7000;
-    unsigned short direction = random(3);
+//     unsigned int colors[3] = {getRandomColor(), getRandomColor(), getRandomColor()};
+//     bool circle = random(2) == 1;
+//     unsigned short mode = modes[random(4)];
+//     unsigned short speed = circle ? 1000 : 7000;
+//     unsigned short direction = random(3);
 
-    if (circle) {
-      for (int i=0; i<NUMSTRIP; i++) {
-        pixels.setSegment(i, i*NUMPIXELS, (i+1)*NUMPIXELS-1, mode, colors, speed, i%2==direction); 
-      }
-    }
-    else {
-      pixels.setSegment(0, 0, NUMSTRIP*NUMPIXELS-1, mode, colors, speed, direction==1);
-    }
-}
+//     if (circle) {
+//       for (int i=0; i<NUMSTRIP; i++) {
+//         pixels.setSegment(i, i*NUMPIXELS, (i+1)*NUMPIXELS-1, mode, colors, speed, i%2==direction); 
+//       }
+//     }
+//     else {
+//       pixels.setSegment(0, 0, NUMSTRIP*NUMPIXELS-1, mode, colors, speed, direction==1);
+//     }
+// }
 
-void setup() {
-  Serial.begin(115200);
+// void setup() {
+//   Serial.begin(115200);
 
-  pixels.init();
-  pixels.setBrightness(20);
-  changeLight();
-  pixels.start();
+//   pixels.init();
+//   pixels.setBrightness(20);
+//   changeLight();
+//   pixels.start();
 
-  ticker.attach(20, changeLight);
-}
+//   ticker.attach(20, changeLight);
+// }
 
-void loop() {
-  pixels.service();
-}
+// void loop() {
+//   pixels.service();
+// }
